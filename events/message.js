@@ -1,41 +1,27 @@
 const fs = require('fs');
-/*const avatar = require('../commands/avatar');
-const joinVoiceChannel = require('../commands/joinVoiceChannel');
-const kick = require('../commands/kick');
-const think = require('../commands/think');*/
+var commands = new Map();
 
-module.exports = (client, member, message) => {
+module.exports = (client, message) => {
 
-  console.log('Member: ' + message);
+  console.log('Member: ' + message.author.username);
 
   fs.readdir('./commands/', (err, files) => {
     files.forEach(file => {
       const eventHandler = require(`../commands/${file}`);
       const eventName = file.split('.')[0];
-      client.on(eventName, (...args) => eventHandler(client, ...args));
+      commands.set(eventName, eventHandler);
     })
   });
 
-  if (message.content === '!join') {
-    return joinVoiceChannel(message, member);
+  var prefix = '!';
+
+  let commandName = message.content.split(' ')[0];
+
+  if (commandName.startsWith(prefix)) {
+    commandName = commandName.substring(prefix.length);
+    if (commands.has(commandName)){
+      let command = commands.get(commandName);
+      return command(message);
+    }
   }
-
-  /*if (message.content === '!think') {
-    return think(message);
-  }*/
-
-  if (message.content.startsWith('!kick')) {
-    return kick(message);
-  }
-
-  if (message.content === '!ping') {
-    return message.reply('pong');
-  }
-
-  if (message.content.startsWith('!avatar')) {
-    return avatar(message);
-  }
-
-  return;
-
 }
