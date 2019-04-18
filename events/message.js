@@ -4,9 +4,9 @@ const joinVoiceChannel = require('../commands/joinVoiceChannel');
 const kick = require('../commands/kick');
 const think = require('../commands/think');*/
 
-module.exports = (client, message, member) => {
+module.exports = (client, member, message) => {
 
-  console.log('Member: ' + member);
+  console.log('Member: ' + message);
 
   fs.readdir('./commands/', (err, files) => {
     files.forEach(file => {

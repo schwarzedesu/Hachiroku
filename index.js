@@ -19,9 +19,10 @@ client.on('ready', () => {
 client.on('error', console.error);
 
 client.on('message', message => {
-    if (message.content === 'think') {
+    if (message.content === '!think') {
         const attachment = new Attachment('https://imgur.com/bsEdspM');
-        message.channel.send(`${message.user.username},`, attachment);
+        //message.channel.send(`${message.user.username},`, attachment);
+        message.channel.send(attachment);
     }
 });
 
