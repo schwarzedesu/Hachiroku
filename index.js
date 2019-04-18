@@ -12,18 +12,7 @@ fs.readdir('./events/', (err, files) => {
   })
 });
 
-client.on('ready', () => {
-  console.log(`${client.user.tag} is ready!`);
-});
-
+// For log purposes
 client.on('error', console.error);
-
-client.on('message', message => {
-    if (message.content === '!think') {
-        const attachment = new Attachment('https://imgur.com/bsEdspM');
-        //message.channel.send(`${message.user.username},`, attachment);
-        message.channel.send(attachment);
-    }
-});
 
 client.login(process.env.token);
