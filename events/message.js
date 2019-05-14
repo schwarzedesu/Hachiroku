@@ -5,6 +5,8 @@ module.exports = (client, message) => {
 
   console.log('Member: ' + message.author.username);
 
+  if (message.author.bot) return;
+
   fs.readdir('./commands/', (err, files) => {
     files.forEach(file => {
       const eventHandler = require(`../commands/${file}`);
@@ -13,9 +15,12 @@ module.exports = (client, message) => {
     })
   });
 
-  var prefix = '!';
+  if (message.content === 'ping') {
+    return message.reply(`pong`)
+  }
 
   let commandName = message.content.split(' ')[0];
+  let prefix = process.env.prefix;
 
   if (commandName.startsWith(prefix)) {
     commandName = commandName.substring(prefix.length);
