@@ -1,20 +1,21 @@
 const fs = require('fs');
 var commands = new Map();
 
+fs.readdir('./commands/', (err, files) => {
+  files.forEach(file => {
+    const eventHandler = require(`../commands/${file}`);
+    const eventName = file.split('.')[0];
+    commands.set(eventName, eventHandler);
+  })
+});
+
 module.exports = (client, message) => {
 
   console.log('Member: ' + message.author.username);
 
   if (message.author.bot) return;
 
-  fs.readdir('./commands/', (err, files) => {
-    files.forEach(file => {
-      const eventHandler = require(`../commands/${file}`);
-      const eventName = file.split('.')[0];
-      commands.set(eventName, eventHandler);
-    })
-  });
-
+  // Just ping-pong
   if (message.content === 'ping') {
     return message.reply(`pong`)
   }

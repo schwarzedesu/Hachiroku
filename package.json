@@ -4,15 +4,14 @@
   "description": "Hachiroku bot",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node hachiroku.js",
+    "dev": "nodemon hachiroku.js"
   },
   "author": "Schwarze",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^11.4.2",
     "dotenv": "^7.0.0",
-    "ffmpeg": "0.0.4",
     "opusscript": "0.0.6",
     "ytdl-core": "^0.29.1"
   },

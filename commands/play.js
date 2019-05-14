@@ -1,92 +1,92 @@
-const fs = require('fs');
 const ytdl = require('ytdl-core');
-var ffmpeg = require('ffmpeg');
+const {queue} = require('../hachiroku');
 
 module.exports = async message => {
 
   const voiceChannel = message.member.voiceChannel;
-  const queue = new Map();
   const serverQueue = queue.get(message.guild.id);
 
   const args = message.content.split(' ');
 
-  if (voiceChannel) {
+  if (args[1]) {
+    if (args[1].startsWith('https://www.youtube.com/watch?v=')) {
+      if (voiceChannel) {
+        const perms = voiceChannel.permissionsFor(message.client.user);
 
-    const perms = voiceChannel.permissionsFor(message.client.user);
+        if (perms.has('CONNECT') && perms.has('SPEAK')) {
+          const songInfo = await ytdl.getInfo(args[1]);
+          const song = {
+           title: songInfo.title,
+           url: songInfo.video_url,
+          };
 
-    if (perms.has('CONNECT') && perms.has('SPEAK')) {
+          if (!serverQueue) {
+            const queueConstruct = {
+              textChannel: message.channel,
+              voiceChannel: voiceChannel,
+              connection: null,
+              songs: [],
+              volume: 5,
+              playing: true,
+            };
 
-      const songInfo = await ytdl.getInfo(args[1]);
-      const song = {
-       title: songInfo.title,
-       url: songInfo.video_url,
-      };
+            queue.set(message.guild.id, queueConstruct);
+            queueConstruct.songs.push(song);
 
-      if (!serverQueue) {
-        const queueConstruct = {
-          textChannel: message.channel,
-          voiceChannel: voiceChannel,
-          connection: null,
-          songs: [],
-          volume: 5,
-          playing: true,
-        };
+            try {
+              var connection = await voiceChannel.join();
+              queueConstruct.connection = connection;
 
-        queue.set(message.guild.id, queueConstruct);
-        queueConstruct.songs.push(song);
+              play(message.guild, queueConstruct.songs[0]);
 
-        try {
-          var connection = await voiceChannel.join();
-          queueConstruct.connection = connection;
+            } catch (err) {
+              console.log('Error trying to join voice channel! \n' + err);
+              queue.delete(message.guild.id);
+              return message.channel.send(err);
+            }
 
-          play(message.guild, queueConstruct.songs[0]);
-
-        } catch (err) {
-          console.log('Error trying to join voice channel! \n' + err);
-          queue.delete(message.guild.id);
-          return message.channel.send(err);
-        }
-
-        function play(guild, song) {
-          const serverQueue = queue.get(guild.id);
-          if (!song) {
-            serverQueue.voiceChannel.leave();
-            queue.delete(guild.id);
-            return;
+          } else {
+            serverQueue.songs.push(song);
+            //console.log(serverQueue.songs);
+            return message.channel
+              .send(`${song.title} has been added to the queue~`);
           }
 
-          const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
-            .on('end', () => {
-              console.log('Song finished~');
-              serverQueue.songs.shift();
-              play(guild, serverQueue.songs[0]);
-            })
-            .on('error', error => {
-              console.error(error);
-            });
-          dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+        } else {
+          message.channel
+            .send(`I need permissions to join ${voiceChannel.name}, ${message.author.username}-sama~`);
         }
-
       } else {
-        serverQueue.songs.push(song);
-        console.log(serverQueue.songs);
-        return message.channel.send(`${song.title} has been added to the queue~`);
+        message.channel
+          .send(`You need to join a voice channel first, ${message.author.username}-sama~`);
       }
-
     } else {
-      message.channel.send(`I need permissions to join ${voiceChannel.name}, ${message.author.username}-sama~`);
+      message.channel
+        .send(`Please provide a youtube link, search will be added soon!`);
+        //// TODO: Search queries with some youtube search module
     }
-    /*voiceChannel.join()
-      .then(connection => {
-        //message.channel.send(`Connected, ${message.author}-sama!`);
-
-        ytdl('http://www.youtube.com/watch?v=A02s8omM_hI')
-          .pipe(fs.createWriteStream('video.flv'));
-
-        connection.playArbitraryInput('https://azurlane.koumakan.jp/w/images/0/03/Unicorn_SelfIntroJP.ogg');
-      })
-      .catch(console.log);*/
   } else {
-    message.channel.send(`You need to join a voice channel first, ${message.author.username}-sama~`);
+    message.channel
+      .send(`Please put a youtube link or a youtube search, ${message.author.username}-sama~`);
   }
+}
+
+function play(guild, song) {
+  const serverQueue = queue.get(guild.id);
+  if (!song) {
+    serverQueue.voiceChannel.leave();
+    queue.delete(guild.id);
+    return;
+  }
+
+  const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
+    .on('end', () => {
+      console.log('Song finished');
+      serverQueue.songs.shift();
+      play(guild, serverQueue.songs[0]);
+    })
+    .on('error', error => {
+      console.error(error);
+    });
+  dispatcher.setVolumeLogarithmic(serverQueue.volume / 6.25);
 }
