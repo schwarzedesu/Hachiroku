@@ -9,7 +9,7 @@ module.exports = message => {
   titles = ``;
 
   for (const [idx, q] of enumerate(serverQueue.songs)) {
-    titles = titles.concat(` **`idx + `:** ` + q.title + `\n`);
+    titles = titles.concat(`  **` + idx + `:** ` + q.title + `\n`);
   }
   console.log(titles);
   message.channel.send(`**Songs queue:** \n` + titles);
