@@ -9,7 +9,9 @@ module.exports = async message => {
   const args = message.content.split(' ');
 
   if (args[1]) {
-    if (args[1].startsWith('https://www.youtube.com/watch?v=')) {
+    // using regex when ;w;
+    if (args[1].startsWith('https://www.youtube.com/watch?v=')
+  || args[1].startsWith('https://youtu.be/')) {
       if (voiceChannel) {
         const perms = voiceChannel.permissionsFor(message.client.user);
 
