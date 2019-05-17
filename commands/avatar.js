@@ -1,9 +1,20 @@
+const {RichEmbed} = require('discord.js');
+
 module.exports = message => {
+  const embed = new RichEmbed()
   const member = message.mentions.members.first();
-  console.log(member)
+
   if (!member) {
-    return message.reply(message.author.avatarURL);
+
+    embed.setTitle(`${message.author.tag}'s avatar:`)
+      .setColor(0xFFFFFF)
+      .setImage(message.author.avatarURL);
+    return message.channel.send(embed);
   }
 
-  return message.reply(member.user.avatarURL);
+  embed.setTitle(`${member.user.tag}'s avatar:`)
+    .setColor(0xFFFFFF)
+    .setImage(member.user.avatarURL);
+
+  return message.channel.send(embed);
 }
