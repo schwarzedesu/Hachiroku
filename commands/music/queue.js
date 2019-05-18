@@ -1,4 +1,4 @@
-const {queue} = require('../hachiroku');
+const {queue} = require('../../hachiroku');
 const {RichEmbed} = require('discord.js');
 
 module.exports = message => {

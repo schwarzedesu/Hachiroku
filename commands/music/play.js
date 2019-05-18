@@ -1,5 +1,8 @@
 const ytdl = require('ytdl-core');
-const {queue} = require('../hachiroku');
+const {queue} = require('../../hachiroku');
+const {RichEmbed} = require('discord.js');
+
+const embed = new RichEmbed();
 
 module.exports = async message => {
 
@@ -39,7 +42,7 @@ module.exports = async message => {
               var connection = await voiceChannel.join();
               queueConstruct.connection = connection;
 
-              play(message.guild, queueConstruct.songs[0]);
+              play(message.guild, queueConstruct.songs[0], message);
 
             } catch (err) {
               console.log('Error trying to join voice channel! \n' + err);
@@ -49,9 +52,12 @@ module.exports = async message => {
 
           } else {
             serverQueue.songs.push(song);
-            //console.log(serverQueue.songs);
-            return message.channel
-              .send(`${song.title} has been added to the queue~`);
+
+            embed.setTitle('**Enqueued:** ')
+              .setDescription(`\`${song.title}\`\n
+              please type \`${process.env.prefix}queue\` to see the current playlist`);
+
+            return message.channel.send(embed);
           }
 
         } else {
@@ -64,7 +70,7 @@ module.exports = async message => {
       }
     } else {
       message.channel
-        .send(`Please provide a youtube link, search will be added soon!`);
+        .send(`Please provide a youtube link, search will be added soon:tm:!`);
         //// TODO: Search queries with some youtube search module
     }
   } else {
@@ -73,7 +79,7 @@ module.exports = async message => {
   }
 }
 
-function play(guild, song) {
+function play(guild, song, msg) {
   const serverQueue = queue.get(guild.id);
   if (!song) {
     serverQueue.voiceChannel.leave();
@@ -85,10 +91,15 @@ function play(guild, song) {
     .on('end', () => {
       console.log('Song finished');
       serverQueue.songs.shift();
-      play(guild, serverQueue.songs[0]);
+      play(guild, serverQueue.songs[0], msg);
     })
     .on('error', error => {
       console.error(error);
     });
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 6.25);
+
+  embed.setTitle('Now playing~')
+    .setDescription(`:musical_note: ${song.title}\n
+    please type \`${process.env.prefix}queue\` to see the current playlist`);
+  msg.channel.send(embed);
 }
