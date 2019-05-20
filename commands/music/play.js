@@ -30,6 +30,7 @@ module.exports = async message => {
               textChannel: message.channel,
               voiceChannel: voiceChannel,
               connection: null,
+              repeat: false,
               songs: [],
               volume: 5,
               playing: true,
