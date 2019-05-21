@@ -35,7 +35,7 @@ function processCommands(dir) {
 
 module.exports = (client, message) => {
 
-  console.log('Member: ' + message.author.username);
+  console.log(`${message.author.username}: ${message.content}`);
 
   if (message.author.bot) return;
 

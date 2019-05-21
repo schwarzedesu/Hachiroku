@@ -1,5 +1,5 @@
-const {queue} = require('../../hachiroku');
-const {RichEmbed} = require('discord.js');
+const { queue, enumerate } = require('../../hachiroku');
+const { RichEmbed } = require('discord.js');
 
 module.exports = message => {
   const serverQueue = queue.get(message.guild.id);
@@ -21,14 +21,4 @@ module.exports = message => {
   console.log(titles);
   message.channel.send(embed);
 
-}
-
-// This has to go somewhere else lol
-function* enumerate(iterable) {
-  let idx = 1;
-
-  for (const i of iterable) {
-    yield [idx, i];
-    idx++;
-  }
 }

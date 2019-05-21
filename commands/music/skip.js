@@ -1,4 +1,4 @@
-const {queue} = require('../../hachiroku');
+const { queue } = require('../../hachiroku');
 
 module.exports = message => {
   const serverQueue = queue.get(message.guild.id);
