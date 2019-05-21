@@ -1,11 +1,8 @@
-const { queue, repeat, enumerate } = require('../../hachiroku');
+const { queue, enumerate } = require('../../hachiroku');
+var repeat = 0;
 
 module.exports = message => {
   const serverQueue = queue.get(message.guild.id);
-
-  if (!serverQueue) return message.channel
-    .send(`There's no song that I can skip`);
-
   const args = message.content.split(' ');
 
   if (args[1] === 'on') {
@@ -20,4 +17,5 @@ module.exports = message => {
     repeat = 0;
     message.channel.send(':arrow_heading_down: Repeating disabled');
   }
+  module.exports = { repeat }
 }

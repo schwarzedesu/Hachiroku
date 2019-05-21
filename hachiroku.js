@@ -6,7 +6,6 @@ const fs = require('fs');
 
 // Queue map for music commands
 const queue = new Map();
-var repeat = 0;
 
 fs.readdir('./events/', (err, files) => {
   files.forEach(file => {
@@ -16,7 +15,7 @@ fs.readdir('./events/', (err, files) => {
   })
 });
 
-module.exports = { queue, enumerate, repeat }
+module.exports = { queue, enumerate }
 
 client.login(process.env.token);
 
