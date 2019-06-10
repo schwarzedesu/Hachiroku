@@ -92,6 +92,7 @@ function play(guild, song, msg) {
       let { repeat } = require('./repeat');
       let songRepeat = serverQueue.songs.shift();
 
+      // TODO: add string to show repeating icon when she np's songs
       if (repeat === 2) {
         serverQueue.songs.push(songRepeat);
       } else if (repeat === 1) {
