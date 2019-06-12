@@ -10,7 +10,7 @@ module.exports = message => {
   } else if (isNaN(idx)) {
     return message.channel
       .send(`Please use a number to delete that song in queue, ${message.author.username}-sama`);
-  } else if (idx > serverQueue.songs.length) {
+  } else if (idx > serverQueue.songs.length || idx < 1) {
     return message.channel
       .send(`Please insert a number inside the current songs list to delete`);
   }

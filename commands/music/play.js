@@ -1,5 +1,5 @@
 const ytdl = require('ytdl-core');
-const { queue } = require('../../hachiroku');
+const { queue, isYoutube } = require('../../hachiroku');
 const { RichEmbed } = require('discord.js');
 
 const embed = new RichEmbed();
@@ -12,9 +12,10 @@ module.exports = async message => {
   const args = message.content.split(' ');
 
   if (args[1]) {
-    // using regex when ;w;
-    if (args[1].startsWith('https://www.youtube.com/watch?v=')
-  || args[1].startsWith('https://youtu.be/')) {
+    // o?
+    /*args[1].startsWith('https://www.youtube.com/watch?v=')
+  || args[1].startsWith('https://youtu.be/')*/
+    if (isYoutube(args[1])) {
       if (voiceChannel) {
         const perms = voiceChannel.permissionsFor(message.client.user);
 
