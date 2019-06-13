@@ -1,8 +1,8 @@
 require('dotenv').config()
-
 const { Client } = require('discord.js');
 const client = new Client();
 const fs = require('fs');
+const url = require('url');
 
 // Queue map for music commands
 const queue = new Map();
@@ -30,7 +30,7 @@ function* enumerate(iterable) {
 }
 
 // RegExp for youtube links checking
-function* isYoutube(link) {
+function isYoutube(link) {
   var regex = /^\w{11}$/;
   if (regex.test(link)) {
     return true;
