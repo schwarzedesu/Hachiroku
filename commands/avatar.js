@@ -1,7 +1,7 @@
 const { RichEmbed } = require('discord.js');
 
 module.exports = message => {
-  const embed = new RichEmbed()
+  const embed = new RichEmbed();
   const member = message.mentions.members.first();
 
   if (!member) {
